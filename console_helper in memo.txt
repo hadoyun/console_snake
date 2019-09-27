@@ -1,0 +1,169 @@
+#include <iostream>
+#include <windows.h>
+#incldue <conio.h>
+
+constexpr int k_buffer_width{5};
+constexpr int k_buffer_height{3};
+
+constexpr int k_buffer_size{(k_buffer_width+1) * k_buffer}
+
+enum class e_key
+{
+	none,
+
+	esc,
+	up,
+	down,
+	left,
+	rigth,
+}
+
+
+class console_helper
+{
+public:
+	console_helper()
+	{	
+		CONSOLE_CURSOR_INFO info{};
+		info.bvisialbe = false;
+		info.dwsize = sizeof(CONSOLE_CURSOR_INFO)
+			
+		SETCONSOLECURSORINFO(m_h_handle, &info);
+	};
+	~console_helper(){};
+
+public:
+	
+
+
+	void clear()
+	{	
+		memset(m_buffer, '_', sizeof(char) * k_buffer_size);
+		for(int y = 0; y < k_buffer_height -1; ++y)
+		{
+			m_buffer[get_index(k_buffer_width,y)] = '\n';
+		}
+		m_buffer[get_index(k_buffer_width, k_buffer_height -1)] = '\0';
+	}		
+
+	void set_character(int x, int y, char ch)
+	{
+
+		m_buffer[get_index(x,y)] = ch;
+	}
+
+	void print()
+	{	
+
+		COORD c_coord{};
+		SETCONSOLECURSORPOSITION(m_h_handle ,c_coord);
+		std::cout<<m_buffer;
+	}	
+
+	e_key detect_key()
+	{
+		if(_kbhit())
+		{
+			int key = _getch();
+			if(key == 27)
+			{	
+				return e_key::esc;
+			}
+			else if(key == 224)
+			{
+				key = _getch();
+				if(key == 72)
+				{
+					return e_key::up;
+				}
+				else if(key == 80)
+				{
+					return e_key::down;
+				}
+				else if(key == 75)
+				{
+					return e_key::left;
+				}
+				else if(key == 77)
+				{
+					return e_key::right;
+				}
+			}
+		}
+	
+	return e_key::none;
+	}
+	
+
+	
+private:
+	int get_index(int x, int y)
+	{
+		return y * (k_buffer_width + 1) + x;
+	}
+
+
+private
+	m_buffer[k_buffer_size]{};
+
+	HANDLE m_h_handle{GETSTDHANLDE(STD_OUTPUT_HANDLE)};
+}
+
+
+
+
+
+
+======================================================main
+
+#include "console_helper"
+
+constexpr char orc = 'o'
+
+
+main()
+{
+console_heldper ch{};
+int x{}, y{};
+
+while(true)
+{
+e_key = ch.detect_key();
+
+switch(key)
+{
+case e_key::none;
+	return;
+case e_key::esc;
+	reutrun 0;
+	return;
+case e_key::up;
+	--y;
+	return;
+case e_key::down;
+	++y;
+	return;
+case e_key::left;
+	--x;
+	return;
+case e_key::right;
+	++x;
+	return;
+
+
+}
+
+
+ch.clear();
+
+ch.setcharater(x, y, orc);
+
+ch.print();
+
+}
+
+
+
+return 0;
+
+}
